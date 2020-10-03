@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scripts/Games/Ball.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/GameUI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Sprites/Cursor_square.svg" type="Texture" id=3]
+[ext_resource path="res://Scripts/Games/CirclePong.gd" type="Script" id=4]
+[ext_resource path="res://Assets/Sprites/Cursor_circle.svg" type="Texture" id=5]
+
+[sub_resource type="SegmentShape2D" id=1]
+a = Vector2( 0, -48 )
+b = Vector2( 0, 48 )
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 200.0
+
+[sub_resource type="CircleShape2D" id=2]
+
+[node name="CirclePong" type="Node2D"]
+pause_mode = 1
+script = ExtResource( 4 )
+paddle_distance = 180
+
+[node name="Center" type="Position2D" parent="."]
+
+[node name="Paddle" type="KinematicBody2D" parent="Center"]
+z_index = -1
+
+[node name="Sprite" type="Sprite" parent="Center/Paddle"]
+position = Vector2( 9.53674e-07, 2.27374e-13 )
+scale = Vector2( 0.0432431, 0.516129 )
+texture = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Center/Paddle"]
+shape = SubResource( 1 )
+
+[node name="Area2D" type="Area2D" parent="Center"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Center/Area2D"]
+shape = SubResource( 3 )
+
+[node name="Ball" type="KinematicBody2D" parent="."]
+position = Vector2( 512, 328 )
+script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="Ball"]
+scale = Vector2( 0.1, 0.1 )
+texture = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+shape = SubResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Ball"]
+
+[node name="GameUI" parent="." instance=ExtResource( 2 )]
+[connection signal="body_exited" from="Center/Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="animation_finished" from="Ball/AnimatedSprite" to="Ball/AnimatedSprite" method="queue_free"]

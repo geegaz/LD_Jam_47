@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Assets/Sprites/sail.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Sprites/boat.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Sprites/paper_texture.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Shaders/sail_wave.shader" type="Shader" id=4]
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 32.0
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform vec2 displacement = vec2(0.0);
+
+void fragment() {
+	COLOR = texture(TEXTURE, mod(UV+displacement,vec2(1.0)));
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+shader_param/displacement = Vector2( 0, 0 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 4 )
+shader_param/speed = 0.0
+
+[node name="BreezeWaker" type="Node2D"]
+
+[node name="PlayerBoat" type="KinematicBody2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="PlayerBoat"]
+current = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBoat"]
+shape = SubResource( 5 )
+
+[node name="Background" type="Sprite" parent="PlayerBoat"]
+material = SubResource( 4 )
+position = Vector2( 0, 2.38419e-07 )
+scale = Vector2( 0.4, 0.4 )
+z_index = -1
+texture = ExtResource( 3 )
+region_enabled = true
+region_rect = Rect2( 640, 0, 2560, 1536 )
+region_filter_clip = true
+
+[node name="Boat" type="Sprite" parent="PlayerBoat"]
+modulate = Color( 0, 0, 0, 1 )
+position = Vector2( 9.53674e-07, -8 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 2 )
+
+[node name="Sail" type="Sprite" parent="PlayerBoat/Boat"]
+material = SubResource( 2 )
+texture = ExtResource( 1 )

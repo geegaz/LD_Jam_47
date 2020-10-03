@@ -1,0 +1,67 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Scripts/Games/SpaceRacer.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/GameUI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Models/Ship.obj" type="ArrayMesh" id=3]
+[ext_resource path="res://Assets/Models/Walls.obj" type="ArrayMesh" id=4]
+[ext_resource path="res://Assets/Models/Emission.tres" type="Material" id=5]
+[ext_resource path="res://Assets/Models/Base.tres" type="Material" id=6]
+
+[sub_resource type="SphereShape" id=3]
+radius = 0.202544
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0.796078, 0.796078, 0.796078, 1 )
+
+[sub_resource type="Environment" id=4]
+ambient_light_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="ViewportTexture" id=1]
+viewport_path = NodePath("Viewport")
+
+[node name="SpaceRacer" type="Node2D"]
+script = ExtResource( 1 )
+ship_distance = 1.4
+
+[node name="Viewport" type="Viewport" parent="."]
+size = Vector2( 640, 360 )
+transparent_bg = true
+render_target_v_flip = true
+
+[node name="Spatial" type="Spatial" parent="Viewport"]
+
+[node name="ShipBody" type="KinematicBody" parent="Viewport/Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Viewport/Spatial/ShipBody"]
+transform = Transform( -0.2, 0, -6.51683e-08, 0, 0.2, 0, 6.51683e-08, 0, -0.2, 0, 0, 0 )
+mesh = ExtResource( 3 )
+material/0 = ExtResource( 6 )
+material/1 = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Viewport/Spatial/ShipBody"]
+shape = SubResource( 3 )
+
+[node name="WallSpawn" type="Position3D" parent="Viewport/Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30 )
+
+[node name="WallTimer" type="Timer" parent="Viewport/Spatial"]
+autostart = true
+
+[node name="MeshInstance" type="MeshInstance" parent="Viewport/Spatial"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 20, 0, 0, -16 )
+mesh = ExtResource( 4 )
+material/0 = SubResource( 5 )
+
+[node name="Camera" type="Camera" parent="Viewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4 )
+environment = SubResource( 4 )
+current = true
+
+[node name="3DRender" type="Sprite" parent="."]
+position = Vector2( 512, 328 )
+scale = Vector2( 2, 2 )
+texture = SubResource( 1 )
+
+[node name="GameUI" parent="." instance=ExtResource( 2 )]
+[connection signal="timeout" from="Viewport/Spatial/WallTimer" to="." method="_on_WallTimer_timeout"]

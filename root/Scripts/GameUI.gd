@@ -37,8 +37,11 @@ func _on_Continue_pressed():
 
 func _on_Retry_pressed():
 	show_menu(false, _GameOver)
+# warning-ignore:return_value_discarded
 	get_tree().reload_current_scene()
 
 func _on_BackToMenu_pressed():
+# warning-ignore:return_value_discarded
+	get_tree().paused = false
 	get_tree().change_scene("res://Scenes/Main.tscn")
 

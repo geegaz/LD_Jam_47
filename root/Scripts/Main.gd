@@ -1,4 +1,4 @@
-extends Node
+extends Control
 
 onready var _MainMenu = $MainMenu
 onready var _GameSelect = $GameSelect
@@ -41,3 +41,9 @@ func _on_Options_pressed():
 
 func _on_Quit_pressed():
 	get_tree().quit()
+
+func _on_CircularPong_pressed():
+	get_tree().change_scene("res://Scenes/Games/CirclePong.tscn")
+
+func _on_SpaceInfiltration_pressed():
+	get_tree().change_scene("res://Scenes/Games/SpaceRacer.tscn")

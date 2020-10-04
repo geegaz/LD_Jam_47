@@ -7,6 +7,8 @@ export var circle_width = 100
 onready var _Circle = $CircleLine
 onready var _Cursor = $Cursor
 
+var angle
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var vec: Vector2 = Vector2(0, circle_width)
@@ -17,6 +19,7 @@ func _input(event):
 	if event is InputEventMouseMotion:
 		var pos = get_local_mouse_position().normalized()
 		if pos != Vector2.ZERO:
+			angle = pos.angle()
 			_Cursor.position = pos*circle_width
-			_Cursor.rotation = pos.angle()
-			emit_signal("angle_changed", pos.angle())
+			_Cursor.rotation = angle
+			emit_signal("angle_changed", angle)

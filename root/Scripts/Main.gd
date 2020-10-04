@@ -20,19 +20,6 @@ func _input(event):
 func _on_Back_pressed():
 	set_state(0)
 
-func set_state(new_state):
-	state = new_state
-	match new_state:
-		0:
-			_GameSelect.hide()
-			_MainMenu.show()
-			_Back.hide()
-		1:
-			_GameSelect.show()
-			_MainMenu.hide()
-			_Back.show()
-
-
 func _on_SelectGame_pressed():
 	set_state(1)
 
@@ -47,3 +34,22 @@ func _on_CircularPong_pressed():
 
 func _on_SpaceInfiltration_pressed():
 	get_tree().change_scene("res://Scenes/Games/SpaceRacer.tscn")
+
+func _on_BreezeMaker_pressed():
+	get_tree().change_scene("res://Scenes/Games/BreezeWaker.tscn")
+
+func set_state(new_state):
+	state = new_state
+	match new_state:
+		0:
+			_GameSelect.hide()
+			_MainMenu.show()
+			_Back.hide()
+		1:
+			
+			_GameSelect.show()
+			_MainMenu.hide()
+			_Back.show()
+
+func reveal_games():
+	pass

@@ -4,6 +4,8 @@ onready var _Circle = $UILayer/Circle
 onready var _Score = $UILayer/CenterContainer/Score
 
 var score = 0
+var revealed_games = 0
+var angle = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

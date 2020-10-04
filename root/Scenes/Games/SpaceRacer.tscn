@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Scripts/Games/SpaceRacer.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/GameUI.tscn" type="PackedScene" id=2]
@@ -6,62 +6,118 @@
 [ext_resource path="res://Assets/Models/Walls.obj" type="ArrayMesh" id=4]
 [ext_resource path="res://Assets/Models/Emission.tres" type="Material" id=5]
 [ext_resource path="res://Assets/Models/Base.tres" type="Material" id=6]
+[ext_resource path="res://Assets/Shaders/distance_color.shader" type="Shader" id=7]
+[ext_resource path="res://Assets/Sounds/ship_explode.wav" type="AudioStream" id=8]
 
-[sub_resource type="SphereShape" id=3]
+[sub_resource type="SphereShape" id=1]
 radius = 0.202544
 
-[sub_resource type="SpatialMaterial" id=5]
-albedo_color = Color( 0.796078, 0.796078, 0.796078, 1 )
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0 ), 0.0, 6.81249, 0, 0, Vector2( 1, 0 ), -0.0542984, 0.0, 0, 0 ]
 
-[sub_resource type="Environment" id=4]
+[sub_resource type="CurveTexture" id=3]
+curve = SubResource( 2 )
+
+[sub_resource type="ParticlesMaterial" id=4]
+gravity = Vector3( 0, 0, 0 )
+scale_curve = SubResource( 3 )
+
+[sub_resource type="SpatialMaterial" id=5]
+
+[sub_resource type="SphereMesh" id=6]
+material = SubResource( 5 )
+
+[sub_resource type="ParticlesMaterial" id=7]
+direction = Vector3( 0, 1, 0 )
+spread = 139.74
+gravity = Vector3( 0, 4, 0 )
+initial_velocity = 1.0
+scale = 0.6
+scale_curve = SubResource( 3 )
+color = Color( 0.133333, 0.133333, 0.133333, 1 )
+
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 0.196078, 0.196078, 0.196078, 1 )
+
+[sub_resource type="SphereMesh" id=9]
+material = SubResource( 8 )
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = ExtResource( 7 )
+shader_param/color_far = Color( 0.25098, 0.0705882, 0.105882, 1 )
+shader_param/color_near = Color( 0.690196, 0.211765, 0.160784, 1 )
+shader_param/max_distance = 1.0
+shader_param/steps = 0
+
+[sub_resource type="Environment" id=11]
+background_mode = 1
+background_color = Color( 0.25098, 0.0705882, 0.105882, 1 )
 ambient_light_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="ViewportTexture" id=1]
-viewport_path = NodePath("Viewport")
-
-[node name="SpaceRacer" type="Node2D"]
+[node name="SpaceRacer" type="Spatial"]
 script = ExtResource( 1 )
 ship_distance = 1.4
 
-[node name="Viewport" type="Viewport" parent="."]
-size = Vector2( 640, 360 )
-transparent_bg = true
-render_target_v_flip = true
+[node name="Sounds" type="Node" parent="."]
+pause_mode = 2
 
-[node name="Spatial" type="Spatial" parent="Viewport"]
+[node name="Explosion" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 8 )
+bus = "SFX"
 
-[node name="ShipBody" type="KinematicBody" parent="Viewport/Spatial"]
+[node name="Spatial" type="Spatial" parent="."]
+
+[node name="ShipBody" type="KinematicBody" parent="Spatial" groups=[
+"Player",
+]]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Viewport/Spatial/ShipBody"]
+[node name="MeshInstance" type="MeshInstance" parent="Spatial/ShipBody"]
 transform = Transform( -0.2, 0, -6.51683e-08, 0, 0.2, 0, 6.51683e-08, 0, -0.2, 0, 0, 0 )
 mesh = ExtResource( 3 )
 material/0 = ExtResource( 6 )
 material/1 = ExtResource( 5 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Viewport/Spatial/ShipBody"]
-shape = SubResource( 3 )
+[node name="CollisionShape" type="CollisionShape" parent="Spatial/ShipBody"]
+shape = SubResource( 1 )
 
-[node name="WallSpawn" type="Position3D" parent="Viewport/Spatial"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -30 )
+[node name="Particles" type="Particles" parent="Spatial/ShipBody"]
+pause_mode = 2
+emitting = false
+amount = 1
+lifetime = 0.5
+one_shot = true
+process_material = SubResource( 4 )
+draw_pass_1 = SubResource( 6 )
 
-[node name="WallTimer" type="Timer" parent="Viewport/Spatial"]
+[node name="Particles2" type="Particles" parent="Spatial/ShipBody"]
+pause_mode = 2
+emitting = false
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 7 )
+draw_pass_1 = SubResource( 9 )
+
+[node name="WallSpawn" type="Position3D" parent="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40 )
+
+[node name="WallTimer" type="Timer" parent="Spatial"]
 autostart = true
 
-[node name="MeshInstance" type="MeshInstance" parent="Viewport/Spatial"]
-transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 20, 0, 0, -16 )
+[node name="Tube" type="MeshInstance" parent="Spatial"]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 22.7498, 0, 0, -19.0054 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 10 )
 
-[node name="Camera" type="Camera" parent="Viewport"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4 )
-environment = SubResource( 4 )
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 4 )
+environment = SubResource( 11 )
 current = true
 
-[node name="3DRender" type="Sprite" parent="."]
-position = Vector2( 512, 328 )
-scale = Vector2( 2, 2 )
-texture = SubResource( 1 )
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 0
 
-[node name="GameUI" parent="." instance=ExtResource( 2 )]
-[connection signal="timeout" from="Viewport/Spatial/WallTimer" to="." method="_on_WallTimer_timeout"]
+[node name="GameUI" parent="UILayer" instance=ExtResource( 2 )]
+[connection signal="timeout" from="Spatial/WallTimer" to="." method="_on_WallTimer_timeout"]

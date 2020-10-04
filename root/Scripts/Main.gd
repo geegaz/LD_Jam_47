@@ -51,5 +51,4 @@ func set_state(new_state):
 			_MainMenu.hide()
 			_Back.show()
 
-func reveal_games():
-	pass
+

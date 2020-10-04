@@ -11,12 +11,9 @@ func _ready():
 
 func _physics_process(delta):
 	$Boat.flip_h = (velocity.x > 0.0)
-	$Boat/Sail.flip_h = $Boat.flip_h
 	
 	var speed = velocity.length()*delta/2
 	$Boat.material.set_shader_param("speed", speed)
-	$Boat/Sail.material.set_shader_param("speed", speed)
-	$Background.material.set_shader_param("displacement", position)
 	
 	velocity = velocity.linear_interpolate(Vector2.ZERO, 0.01)
 	var collision = move_and_collide(velocity*delta)

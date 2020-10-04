@@ -1,45 +1,350 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Scripts/Games/Ball.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/GameUI.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/Sprites/Cursor_square.svg" type="Texture" id=3]
 [ext_resource path="res://Scripts/Games/CirclePong.gd" type="Script" id=4]
 [ext_resource path="res://Assets/Sprites/Cursor_circle.svg" type="Texture" id=5]
+[ext_resource path="res://Assets/Sprites/Leaf.svg" type="Texture" id=6]
+[ext_resource path="res://Assets/Shaders/rotate.shader" type="Shader" id=7]
+[ext_resource path="res://Assets/Sprites/light.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Shaders/grow.shader" type="Shader" id=9]
+[ext_resource path="res://Assets/Sounds/paddle_hit.wav" type="AudioStream" id=10]
+[ext_resource path="res://Assets/Sprites/bonus_particle.svg" type="Texture" id=11]
 
-[sub_resource type="SegmentShape2D" id=1]
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 7 )
+shader_param/degree = 0.03
+shader_param/speed = 0.45
+shader_param/offset = 0.0
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 7 )
+shader_param/degree = 0.05
+shader_param/speed = 0.5
+shader_param/offset = 2.0
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = ExtResource( 7 )
+shader_param/degree = 0.04
+shader_param/speed = 0.5
+shader_param/offset = 4.0
+
+[sub_resource type="SegmentShape2D" id=4]
 a = Vector2( 0, -48 )
 b = Vector2( 0, 48 )
 
-[sub_resource type="CircleShape2D" id=2]
+[sub_resource type="ShaderMaterial" id=8]
+shader = ExtResource( 9 )
+shader_param/time = 0.0
+shader_param/amount = 0.2
+
+[sub_resource type="CircleShape2D" id=5]
 radius = 200.0
 
-[sub_resource type="CircleShape2D" id=3]
+[sub_resource type="CircleShape2D" id=6]
+
+[sub_resource type="Curve" id=10]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), -3.1687, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=11]
+curve = SubResource( 10 )
+
+[sub_resource type="ParticlesMaterial" id=9]
+flag_disable_z = true
+spread = 25.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 200.0
+initial_velocity_random = 0.4
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping = 180.0
+scale = 1.5
+scale_random = 1.0
+scale_curve = SubResource( 11 )
+color = Color( 0, 1, 1, 1 )
 
 [node name="CirclePong" type="Node2D"]
 pause_mode = 1
 script = ExtResource( 4 )
 paddle_distance = 180
 
+[node name="Sounds" type="Node" parent="."]
+pause_mode = 2
+
+[node name="PaddleHit" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 10 )
+bus = "SFX"
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="BackgroundSprite" type="Sprite" parent="Background"]
+modulate = Color( 0.0313726, 0.141176, 0.137255, 1 )
+position = Vector2( 512, 300 )
+scale = Vector2( 5.53514, 3.22581 )
+texture = ExtResource( 3 )
+
+[node name="Leaf" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 168, 64 )
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 6 )
+
+[node name="Leaf8" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 24, 184 )
+rotation = -0.523598
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+
+[node name="Leaf11" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 0, 472 )
+rotation = -1.309
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+
+[node name="Leaf14" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 312, 1.52588e-05 )
+rotation = 0.785397
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 6 )
+
+[node name="Leaf13" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 256, 600 )
+rotation = -2.09439
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 6 )
+
+[node name="Leaf2" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 48, 56 )
+rotation = 0.523598
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+
+[node name="Leaf3" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 96, 160 )
+rotation = 0.523598
+scale = Vector2( 0.55, 0.55 )
+texture = ExtResource( 6 )
+
+[node name="Leaf15" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 205.25, -8 )
+rotation = 0.523598
+scale = Vector2( 0.55, 0.55 )
+texture = ExtResource( 6 )
+
+[node name="Leaf10" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 72, 560 )
+rotation = -1.0472
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 6 )
+
+[node name="Leaf9" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 216, 624 )
+rotation = -1.309
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 6 )
+
+[node name="Leaf16" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 7.62939e-06, 256 )
+rotation = 0.523598
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 6 )
+
+[node name="Leaf7" type="Sprite" parent="Background"]
+modulate = Color( 0.266667, 0.556863, 0.105882, 1 )
+material = SubResource( 3 )
+position = Vector2( 64, 56 )
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 6 )
+
+[node name="Leaf12" type="Sprite" parent="Background"]
+modulate = Color( 0.266667, 0.556863, 0.105882, 1 )
+material = SubResource( 3 )
+position = Vector2( 120, 608 )
+rotation = -4.45058
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf17" type="Sprite" parent="Background"]
+modulate = Color( 0.266667, 0.556863, 0.105882, 1 )
+material = SubResource( 3 )
+position = Vector2( 336, 592 )
+rotation = -1.309
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 6 )
+
+[node name="Leaf4" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 872, 96 )
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf18" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 1008, 232 )
+rotation = 0.261799
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf19" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 768, 584 )
+rotation = 4.18878
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+
+[node name="Leaf20" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 696, 3.05176e-05 )
+rotation = 0.261799
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf21" type="Sprite" parent="Background"]
+modulate = Color( 0.0941176, 0.247059, 0.207843, 1 )
+material = SubResource( 1 )
+position = Vector2( 1000, 464 )
+rotation = -5.23598
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf5" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 1000, 136 )
+rotation = -0.261799
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf6" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 872, 24 )
+rotation = -0.261799
+scale = Vector2( 0.55, 0.55 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf22" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 776, -6.67572e-06 )
+rotation = -0.785397
+scale = Vector2( 0.55, 0.55 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf23" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 888, 520 )
+rotation = -4.71238
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf24" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 672, 608 )
+rotation = 1.309
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf25" type="Sprite" parent="Background"]
+modulate = Color( 0.0862745, 0.372549, 0.14902, 1 )
+material = SubResource( 2 )
+position = Vector2( 1024, 280 )
+rotation = -0.261799
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf26" type="Sprite" parent="Background"]
+modulate = Color( 0.266667, 0.556863, 0.105882, 1 )
+material = SubResource( 3 )
+position = Vector2( 960, 56 )
+scale = Vector2( 0.7, 0.7 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf27" type="Sprite" parent="Background"]
+modulate = Color( 0.266667, 0.556863, 0.105882, 1 )
+material = SubResource( 3 )
+position = Vector2( 972.15, 552 )
+rotation = -5.23598
+scale = Vector2( 0.6, 0.6 )
+texture = ExtResource( 6 )
+flip_h = true
+
+[node name="Leaf28" type="Sprite" parent="Background"]
+modulate = Color( 0.266667, 0.556863, 0.105882, 1 )
+material = SubResource( 3 )
+position = Vector2( 808, 600 )
+rotation = -4.18878
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 6 )
+flip_h = true
+
 [node name="Center" type="Position2D" parent="."]
 
 [node name="Paddle" type="KinematicBody2D" parent="Center"]
 position = Vector2( 1152, 320 )
-z_index = -1
-
-[node name="Sprite" type="Sprite" parent="Center/Paddle"]
-position = Vector2( 9.53674e-07, 2.27374e-13 )
-scale = Vector2( 0.0432431, 0.516129 )
-texture = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Center/Paddle"]
-shape = SubResource( 1 )
+shape = SubResource( 4 )
+
+[node name="Line2D" type="Line2D" parent="Center/Paddle"]
+material = SubResource( 8 )
+points = PoolVector2Array( 0, -48, 0, 48 )
+default_color = Color( 1, 1, 1, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
 
 [node name="Area2D" type="Area2D" parent="Center"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Center/Area2D"]
-shape = SubResource( 2 )
+shape = SubResource( 5 )
 
-[node name="Ball" type="KinematicBody2D" parent="."]
+[node name="Ball" type="KinematicBody2D" parent="." groups=[
+"Player",
+]]
 position = Vector2( 1152, 192 )
 script = ExtResource( 1 )
 
@@ -49,10 +354,20 @@ scale = Vector2( 0.1, 0.1 )
 texture = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
-shape = SubResource( 3 )
+shape = SubResource( 6 )
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="Ball"]
+[node name="Light2D" type="Light2D" parent="Ball"]
+texture = ExtResource( 8 )
+texture_scale = 0.2
+
+[node name="Particles2D" type="Particles2D" parent="Ball"]
+pause_mode = 2
+emitting = false
+amount = 6
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 9 )
+texture = ExtResource( 11 )
 
 [node name="GameUI" parent="." instance=ExtResource( 2 )]
 [connection signal="body_exited" from="Center/Area2D" to="." method="_on_Area2D_body_exited"]
-[connection signal="animation_finished" from="Ball/AnimatedSprite" to="Ball/AnimatedSprite" method="queue_free"]

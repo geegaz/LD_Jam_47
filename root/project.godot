@@ -74,4 +74,5 @@ ui_menu={
 
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
+environment/default_clear_color=Color( 0.223529, 0.223529, 0.223529, 1 )
 environment/default_environment="res://default_env.tres"

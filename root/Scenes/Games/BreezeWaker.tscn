@@ -1,26 +1,25 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=23 format=2]
 
-[ext_resource path="res://Assets/Sprites/sail.png" type="Texture" id=1]
-[ext_resource path="res://Assets/Sprites/boat.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Sprites/paper_texture.png" type="Texture" id=3]
-[ext_resource path="res://Assets/Shaders/sail_wave.shader" type="Shader" id=4]
+[ext_resource path="res://Assets/Sprites/boat_vect.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Sprites/fan_vect.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Sprites/Cursor_square.svg" type="Texture" id=3]
+[ext_resource path="res://Assets/Sprites/wave_vect.png" type="Texture" id=4]
 [ext_resource path="res://Scripts/Games/PlayerBoat.gd" type="Script" id=5]
 [ext_resource path="res://Scripts/Games/BreezeWaker.gd" type="Script" id=6]
+[ext_resource path="res://Assets/Sounds/ship_explode.wav" type="AudioStream" id=7]
 [ext_resource path="res://Assets/Shaders/boat_damage.shader" type="Shader" id=8]
-[ext_resource path="res://Assets/Sprites/waves.png" type="Texture" id=9]
 [ext_resource path="res://Assets/Sprites/wind_blade.png" type="Texture" id=10]
-[ext_resource path="res://Assets/Sprites/fan.png" type="Texture" id=11]
 [ext_resource path="res://Scenes/GameUI.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scripts/Games/Fan.gd" type="Script" id=13]
 [ext_resource path="res://Scenes/Games/Rock.tscn" type="PackedScene" id=14]
 
-[sub_resource type="Curve" id=12]
+[sub_resource type="Curve" id=1]
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), -6.85349, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=13]
-curve = SubResource( 12 )
+[sub_resource type="CurveTexture" id=2]
+curve = SubResource( 1 )
 
-[sub_resource type="ParticlesMaterial" id=14]
+[sub_resource type="ParticlesMaterial" id=3]
 emission_shape = 2
 emission_box_extents = Vector3( 500, 500, 0 )
 flag_disable_z = true
@@ -28,13 +27,12 @@ gravity = Vector3( 0, 0, 0 )
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale = 0.2
-scale_curve = SubResource( 13 )
-color = Color( 0, 0, 0, 1 )
+scale_curve = SubResource( 2 )
 
-[sub_resource type="CapsuleShape2D" id=11]
+[sub_resource type="CapsuleShape2D" id=4]
 height = 44.0
 
-[sub_resource type="Shader" id=2]
+[sub_resource type="Shader" id=5]
 code = "shader_type canvas_item;
 render_mode unshaded;
 
@@ -44,18 +42,14 @@ void fragment() {
 	COLOR = texture(TEXTURE, mod(UV+displacement*(TEXTURE_PIXEL_SIZE/0.4),vec2(1.0)));
 }"
 
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
+[sub_resource type="ShaderMaterial" id=6]
+shader = SubResource( 5 )
 shader_param/displacement = Vector2( 0, 0 )
 
 [sub_resource type="ShaderMaterial" id=7]
 shader = ExtResource( 8 )
 shader_param/blink = false
 shader_param/blink_speed = 30.0
-shader_param/speed = 0.0
-
-[sub_resource type="ShaderMaterial" id=4]
-shader = ExtResource( 4 )
 shader_param/speed = 0.0
 
 [sub_resource type="Curve" id=8]
@@ -77,21 +71,27 @@ orbit_velocity_random = 0.0
 scale = 0.2
 scale_random = 0.2
 scale_curve = SubResource( 9 )
-color = Color( 0, 0, 0, 1 )
 
 [node name="BreezeWaker" type="Node2D"]
 script = ExtResource( 6 )
 
+[node name="Sounds" type="Node" parent="."]
+pause_mode = 2
+
+[node name="Break" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 7 )
+
 [node name="PlayerBoat" type="KinematicBody2D" parent="." groups=[
 "Player",
 ]]
+position = Vector2( 858.826, -245.888 )
 script = ExtResource( 5 )
 
 [node name="Wave1" type="Particles2D" parent="PlayerBoat"]
 lifetime = 3.0
 local_coords = false
-process_material = SubResource( 14 )
-texture = ExtResource( 9 )
+process_material = SubResource( 3 )
+texture = ExtResource( 4 )
 
 [node name="Camera2D" type="Camera2D" parent="PlayerBoat"]
 current = true
@@ -99,27 +99,22 @@ current = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBoat"]
 position = Vector2( 0, 8 )
 rotation = 1.5708
-shape = SubResource( 11 )
+shape = SubResource( 4 )
 
 [node name="Background" type="Sprite" parent="PlayerBoat"]
-material = SubResource( 3 )
-position = Vector2( 0, 5.68434e-14 )
-scale = Vector2( 0.4, 0.4 )
+modulate = Color( 0.192157, 0.25098, 0.392157, 1 )
+material = SubResource( 6 )
+position = Vector2( 9.15527e-05, -1.52588e-05 )
+scale = Vector2( 6.22703, 3.44086 )
 z_index = -1
 texture = ExtResource( 3 )
-region_enabled = true
 region_rect = Rect2( 640, 0, 2560, 1536 )
 region_filter_clip = true
 
 [node name="Boat" type="Sprite" parent="PlayerBoat"]
-modulate = Color( 0, 0, 0, 1 )
 material = SubResource( 7 )
 position = Vector2( 9.53674e-07, -8 )
 scale = Vector2( 0.2, 0.2 )
-texture = ExtResource( 2 )
-
-[node name="Sail" type="Sprite" parent="PlayerBoat/Boat"]
-material = SubResource( 4 )
 texture = ExtResource( 1 )
 
 [node name="BonusSpawns" type="Node2D" parent="."]
@@ -158,363 +153,459 @@ position = Vector2( 784, -280 )
 z_index = 1
 
 [node name="Rock" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 504, -144 )
 
 [node name="Rock3" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -480, -568 )
 
 [node name="Rock64" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -552, -976 )
 
 [node name="Rock14" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -232, 168 )
 
 [node name="Rock93" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -816, -72 )
 
 [node name="Rock94" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -896, -80 )
 
 [node name="Rock90" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 1200, 32 )
 
 [node name="Rock91" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -248, 616 )
 
 [node name="Rock20" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 776, -728 )
 
 [node name="Rock4" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 840, 0 )
 
 [node name="Rock89" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1192, 272 )
 
 [node name="Rock5" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 344, -515.2 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock82" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1216, -728 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock83" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1184, -656 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock84" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1120, -600 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock58" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 204, -1088 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock6" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 312, -448 )
 
 [node name="Rock59" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 184, -1024 )
 
 [node name="Rock60" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 144, -988.8 )
 
 [node name="Rock61" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 235.2, -808 )
 
 [node name="Rock7" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 192, -496 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock77" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 704, 290 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock87" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1336, 360 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock62" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -688, -1064 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock12" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -640, -32 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock96" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -728, 568 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock95" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -840, 520 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock71" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -288, 712 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock78" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -424, 688 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock66" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -1280, -475.2 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock67" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -1176, -568 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock68" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -1200, -680 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock25" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -856, 680 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock26" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -560, 784 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock27" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -184, 856 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock28" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 168, 864 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock29" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 488, 880 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock30" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 816, 824 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock31" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1136, 736 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock32" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1416, 568 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock33" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1568, 360 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock34" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 1672, 128 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock35" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1696, -96 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock36" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1680, -307.2 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock37" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1632, -536 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock38" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1544, -755.2 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock39" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 1440, -936 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock40" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1248, -1088 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock41" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1008, -1216 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock42" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 680, -1280 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock43" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 368, -1320 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock44" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 40, -1312 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock45" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -272, -1296 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock46" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -576, -1240 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock47" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -896, -1160 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock48" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -1152, -984 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock49" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -1336, -808 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock50" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -1464, -600 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock69" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 368, 416 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock97" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 400, -1176 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock51" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -1552, -384 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock52" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -1536, -144 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock53" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -1504, 72 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock54" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -1392, 256 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock55" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -1264, 408 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock56" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -1088, 536 )
 scale = Vector2( 5.03164, 4.72498 )
 
 [node name="Rock9" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -520, -512 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock92" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -728, -79.9999 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock65" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -800, -1016 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock63" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -632, -992 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock18" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 352, -72 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock19" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( -136, -160 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock22" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 728, -452.8 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock15" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 56, -440 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock13" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -584, 35.2001 )
 scale = Vector2( 1.55615, 1.45391 )
 
 [node name="Rock10" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 1168, -248 )
 
 [node name="Rock21" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 672, -408 )
 
 [node name="Rock85" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 1072, -544 )
 
 [node name="Rock86" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1120, -216 )
 
 [node name="Rock11" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -560, -416 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock23" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 648, -744 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock79" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1216, -920 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock80" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1344, -792 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock81" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 1208, -824 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock24" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 168, -1184 )
 scale = Vector2( 2.55398, 2.10409 )
 
 [node name="Rock8" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( -112, -104 )
 
 [node name="Rock16" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( -32, -400 )
 
 [node name="Rock17" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 464, -80 )
 
 [node name="Rock76" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 128, 344 )
 
 [node name="Rock2" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 600, -112 )
 scale = Vector2( 1.79239, 1.65835 )
 
 [node name="Rock74" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 152, 408 )
 scale = Vector2( 1.79239, 1.65835 )
 
 [node name="Rock75" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 224, 339 )
 scale = Vector2( 1.79239, 1.65835 )
 
 [node name="Rock73" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.286275, 0.45098, 0.756863, 1 )
 position = Vector2( 592, 232 )
 scale = Vector2( 1.79239, 1.65835 )
 
 [node name="Rock88" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 1240, 307.2 )
 scale = Vector2( 1.79239, 1.65835 )
 
 [node name="Rock70" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.494118, 0.752941, 0.74902, 1 )
 position = Vector2( 568, 320 )
 scale = Vector2( 1.79239, 1.65835 )
 
 [node name="Rock72" parent="Terrain" instance=ExtResource( 14 )]
+modulate = Color( 0.341176, 0.647059, 0.831373, 1 )
 position = Vector2( 480, 272 )
 scale = Vector2( 1.79239, 1.65835 )
 
@@ -532,16 +623,14 @@ script = ExtResource( 13 )
 [node name="WindParticles" type="Particles2D" parent="UILayer/Center/Fan"]
 position = Vector2( 64, 0 )
 rotation = 1.57079
-scale = Vector2( 1, 1 )
 emitting = false
 lifetime = 0.8
 process_material = SubResource( 10 )
 texture = ExtResource( 10 )
 
 [node name="FanSprite" type="Sprite" parent="UILayer/Center/Fan"]
-modulate = Color( 0, 0, 0, 1 )
 scale = Vector2( 0.2, 0.2 )
-texture = ExtResource( 11 )
+texture = ExtResource( 2 )
 offset = Vector2( 200, 0 )
 
 [node name="Timer" type="Timer" parent="UILayer/Center/Fan"]
@@ -549,7 +638,7 @@ wait_time = 0.1
 one_shot = true
 
 [node name="GameUI" parent="UILayer" instance=ExtResource( 12 )]
-[connection signal="apply_wind" from="." to="UILayer/Center/Fan" method="_on_BreezeWaker_apply_wind"]
 [connection signal="apply_wind" from="." to="PlayerBoat" method="_on_BreezeWaker_apply_wind"]
+[connection signal="apply_wind" from="." to="UILayer/Center/Fan" method="_on_BreezeWaker_apply_wind"]
 [connection signal="hit_rock" from="PlayerBoat" to="." method="_on_PlayerBoat_hit_rock"]
 [connection signal="timeout" from="UILayer/Center/Fan/Timer" to="UILayer/Center/Fan" method="_on_Timer_timeout"]

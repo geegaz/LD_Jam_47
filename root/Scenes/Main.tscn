@@ -1,8 +1,13 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Assets/Fonts/lerotica-regular/lerotica-regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
 [ext_resource path="res://Assets/Themes/main.tres" type="Theme" id=3]
+[ext_resource path="res://Assets/Sprites/ship_icon_small.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Sprites/pong_icon_small.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Sprites/boat_icon_small.png" type="Texture" id=6]
+[ext_resource path="res://Scenes/Circle.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Assets/Sounds/button_click.wav" type="AudioStream" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 80
@@ -14,6 +19,15 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="Button" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource( 8 )
+
+[node name="Circle" parent="." instance=ExtResource( 7 )]
+modulate = Color( 0.133333, 0.133333, 0.133333, 1 )
+position = Vector2( 520, 339 )
 
 [node name="Label" type="Label" parent="."]
 margin_left = 344.0
@@ -44,27 +58,23 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/CenterContainer"]
 margin_left = 60.0
-margin_top = 236.0
+margin_top = 261.0
 margin_right = 196.0
-margin_bottom = 363.0
+margin_bottom = 339.0
 custom_constants/separation = 20
 
 [node name="SelectGame" type="Button" parent="MainMenu/CenterContainer/VBoxContainer"]
 margin_right = 136.0
 margin_bottom = 29.0
 text = "Select Game"
+align = 0
 
-[node name="Options" type="Button" parent="MainMenu/CenterContainer/VBoxContainer"]
+[node name="Quit" type="Button" parent="MainMenu/CenterContainer/VBoxContainer"]
 margin_top = 49.0
 margin_right = 136.0
 margin_bottom = 78.0
-text = "Options"
-
-[node name="Quit" type="Button" parent="MainMenu/CenterContainer/VBoxContainer"]
-margin_top = 98.0
-margin_right = 136.0
-margin_bottom = 127.0
 text = "Quit"
+align = 0
 
 [node name="GameSelect" type="Control" parent="."]
 margin_right = 1024.0
@@ -81,28 +91,30 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GameSelect/CenterContainer"]
-margin_left = 33.0
-margin_top = 236.0
-margin_right = 222.0
-margin_bottom = 363.0
+margin_left = 42.0
+margin_top = 23.0
+margin_right = 213.0
+margin_bottom = 576.0
 custom_constants/separation = 20
 
 [node name="CircularPong" type="Button" parent="GameSelect/CenterContainer/VBoxContainer"]
-margin_right = 189.0
-margin_bottom = 29.0
-text = "Circular Pong"
+margin_right = 171.0
+margin_bottom = 171.0
+icon = ExtResource( 5 )
+align = 0
 
 [node name="SpaceInfiltration" type="Button" parent="GameSelect/CenterContainer/VBoxContainer"]
-margin_top = 49.0
-margin_right = 189.0
-margin_bottom = 78.0
-text = "Space Infiltration"
+margin_top = 191.0
+margin_right = 171.0
+margin_bottom = 362.0
+icon = ExtResource( 4 )
 
 [node name="BreezeMaker" type="Button" parent="GameSelect/CenterContainer/VBoxContainer"]
-margin_top = 98.0
-margin_right = 189.0
-margin_bottom = 127.0
-text = "Breeze Waker"
+margin_top = 382.0
+margin_right = 171.0
+margin_bottom = 553.0
+icon = ExtResource( 6 )
+align = 0
 
 [node name="Back" type="Button" parent="."]
 margin_left = 872.0
@@ -117,7 +129,6 @@ __meta__ = {
 
 [node name="Tween" type="Tween" parent="."]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/SelectGame" to="." method="_on_SelectGame_pressed"]
-[connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/Options" to="." method="_on_Options_pressed"]
 [connection signal="pressed" from="MainMenu/CenterContainer/VBoxContainer/Quit" to="." method="_on_Quit_pressed"]
 [connection signal="pressed" from="GameSelect/CenterContainer/VBoxContainer/CircularPong" to="." method="_on_CircularPong_pressed"]
 [connection signal="pressed" from="GameSelect/CenterContainer/VBoxContainer/SpaceInfiltration" to="." method="_on_SpaceInfiltration_pressed"]
